@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/resume_page.css' %}">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 transition-all">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-8 py-4" style="margin-top: 15px;">
+            <h1 class="text-2xl font-extrabold">AI Resume Analyzer</h1>
+            <nav class ="flex items-center ml-auto">
+                <ul class="flex space-x-6 text-lg font-medium">
+                    <li><a href="{% url 'home' %}" class="hover:text-gray-300 transition">Home</a></li>
+                    <li><a href="{% url 'upload_resume' %}" class="text-gray-300 hover:text-gray-300 transition">Resume Analyzer</a></li>
+                    <li><a href="{% url 'live_internship' %}" class="hover:text-gray-300 transition">Live Internship</a></li>
+                    <li><a href="#" class="hover:text-gray-300 transition">Dashboard</a></li>
+                    <li><a href="{% url 'pricing' %}" class="hover:text-gray-300 transition">Pricing</a></li>
+                </ul>
+            </nav>
+            <div class="relative ml-4"> <!-- Add small left margin if needed -->
+                <button id="user-logo" class="focus:outline-none">
+                    <img src="{% static 'images/user-icon.png' %}" alt="User" class="w-10 h-10 rounded-full">
+                </button>
+            </div>
+        </div>
+    </header>
+
+        <!-- Sidebar -->
+    <div id="sidebar" class="hidden fixed top-0 right-0 h-full w-64 bg-gray-800 text-white p-6 shadow-lg">
+        <button id="close-sidebar" class="text-white text-xl absolute top-4 right-4">&times;</button>
+        <div class="flex items-center space-x-3">
+            <img src="{% static 'images/user-icon.png' %}" alt="User" class="w-16 h-16 rounded-full">
+            <span class="text-lg font-semibold">
+                {{ request.session.username|default:"User Name" }}
+            </span>
+        </div>
+        <ul class="mt-6 space-y-4">
+            <li><a href="#" class="block">Profile</a></li>
+            <li><a href="#" class="block">Settings</a></li>
+            <li><a href="#" class="block">Logout</a></li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById("user-logo").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.remove("hidden");
+        });
+        document.getElementById("close-sidebar").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.add("hidden");
+        });
+    </script>
+
+    <!-- Hero Section -->
+    <section class="flex flex-col items-center justify-center text-center min-h-[50vh] px-6 py-10">
+        <p class="text-4xl font-extrabold text-gray-900 dark:text-white animate-fade-in">
+            Upload your resume and get <span class="text-purple-600">AI</span>-powered feedback instantly.
+        </p>
+
+        <form method="POST" enctype="multipart/form-data" class="flex flex-col items-center space-y-6 mt-8">
+            {% csrf_token %}
+            
+            <label for="resume" class="block text-lg font-medium text-gray-700 dark:text-gray-300">
+                Upload Your Resume (PDF Only)
+            </label>
+
+            <!-- Custom File Upload Button -->
+            <input type="file" name="resume" id="resume" accept=".pdf, .docx" 
+                class="hidden file:border file:border-purple-600 file:bg-purple-600 file:text-white 
+                file:px-4 file:py-2 file:rounded-lg file:cursor-pointer file:hover:bg-purple-700 
+                dark:file:border-gray-400 dark:file:bg-gray-700 dark:file:text-black">
+
+            <label for="resume" class="mt-6 px-6 py-3 text-white rounded-lg hover:bg-indigo-700 transition"
+                style="background: linear-gradient(90deg, #1f1a27, #4f46e5); color: white; padding: 12px 24px; 
+                border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; 
+                box-shadow: 12px 11px 7px rgba(0, 11, 24, 0.2); display: inline-block; text-align: center;">
+                Upload Resume
+            </label>
+            <br>
+
+            <button type="submit" id="subs" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                Upload & Analyze
+            </button>
+
+            <div class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
+                <label for="toggleJobInternship" class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Manual Similarity score check:
+                </label>
+                <input type="checkbox" id="toggleJobInternship" class="ml-2 h-5 w-5 text-blue-500 border-gray-300 dark:border-gray-600 rounded">
+            </div>
+            
+            <!-- Job Description Section (Initially hidden) -->
+            <div id="jobInternshipSection" class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 hidden">
+                <div class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Job Description:</h2>
+                    <textarea id="jobDescription" class="mt-2 p-3 w-full h-40 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" placeholder="Paste the job description here..."></textarea>
+                </div>
+            
+                <div id="user_resume_details" class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 hidden">
+                    <div class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Manual details:</h2>
+                        <textarea id="user_resume_details" class="mt-2 p-3 w-full h-40 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" placeholder="Paste the resume details here..."></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                // Get the checkbox and sections
+                const toggleJobInternship = document.getElementById('toggleJobInternship');
+                const jobInternshipSection = document.getElementById('jobInternshipSection');
+                const userResumeDetails = document.getElementById('user_resume_details');
+            
+                // Event listener to toggle visibility based on checkbox state
+                toggleJobInternship.addEventListener('change', () => {
+                    if (toggleJobInternship.checked) {
+                        jobInternshipSection.classList.remove('hidden');
+                        userResumeDetails.classList.remove('hidden');
+                    } else {
+                        jobInternshipSection.classList.add('hidden');
+                        userResumeDetails.classList.add('hidden');
+                    }
+                });
+            </script>
+            
+            {% if extracted_text %}
+            <div class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Extracted Text:</h2>
+                <label class="mt-2 text-gray-700 dark:text-gray-300">
+                    <input type="checkbox" id="showTextCheckbox"> Show Extracted Text
+                </label>
+
+                <p id="extractedTextContainer" class="mt-2 text-gray-700 dark:text-gray-300 whitespace-pre-line hidden">
+                    {{ extracted_text }}
+                </p>
+            </div>
+            {% endif %}
+
+            {% if similarity_score %}
+            <div class="mt-6 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white-500 dark:bg-gray-800">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Resume Similarity Score: {{ similarity_score }}%</h3>
+            </div>
+            {% endif %}
+        </form>
+    </section>
+
+    <script src="{% static 'js/resume_page.js' %}"></script>
+</body>
+
+</html>
+<footer class="bg-gray-900 text-white py-6">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2025 AI Resume Analyzer. All rights reserved.</p>
+    </div>
+</footer>

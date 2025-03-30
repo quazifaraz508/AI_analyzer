@@ -1,0 +1,113 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/resume_page.css' %}">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-all">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-8 py-4" style="margin-top: 15px;">
+            <h1 class="text-2xl font-extrabold">AI Resume Analyzer</h1>
+            <nav  class = "flex items-center ml-auto">
+                <ul class="flex space-x-6 text-lg font-medium">
+                    <li><a href="{% url 'home' %}" class="hover:text-gray-300 transition">Home</a></li>
+                    <li><a href="{% url 'upload_resume' %}" class="hover:text-gray-300 transition">Resume Analyzer</a></li>
+                    <li><a href="{% url 'live_internship' %}" class="hover:text-gray-300 transition">Live Internship</a></li>
+                    <li><a href="#" class="hover:text-gray-300 transition">Dashboard</a></li>
+                    <li><a href="{% url 'pricing' %}" class="text-gray-300 hover:text-gray-300 transition">Pricing</a></li>
+                </ul>
+            </nav>
+            <div class="relative ml-4"> <!-- Add small left margin if needed -->
+                <button id="user-logo" class="focus:outline-none">
+                    <img src="{% static 'images/user-icon.png' %}" alt="User" class="w-10 h-10 rounded-full">
+                </button>
+            </div>
+        </div>
+    </header>
+
+        <!-- Sidebar -->
+    <div id="sidebar" class="hidden fixed top-0 right-0 h-full w-64 bg-gray-800 text-white p-6 shadow-lg">
+        <button id="close-sidebar" class="text-white text-xl absolute top-4 right-4">&times;</button>
+        <div class="flex items-center space-x-3">
+            <img src="{% static 'images/user-icon.png' %}" alt="User" class="w-16 h-16 rounded-full">
+            <span class="text-lg font-semibold">
+                {{ request.session.username|default:"User Name" }}
+            </span>
+        </div>
+        <ul class="mt-6 space-y-4">
+            <li><a href="#" class="block">Profile</a></li>
+            <li><a href="#" class="block">Settings</a></li>
+            <li><a href="#" class="block">Logout</a></li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById("user-logo").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.remove("hidden");
+        });
+        document.getElementById("close-sidebar").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.add("hidden");
+        });
+    </script>
+    
+    <!-- 🚀 Hero Section -->
+    <section class="flex flex-col items-center justify-center text-center min-h-[50vh] px-6">
+        <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white animate-fade-in">
+            Unlock Your Career Potential with <span class="text-purple-600">AI</span>
+        </h1>
+        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">
+            Get instant insights into your resume with AI-powered analysis. Enhance your chances of landing your dream job!
+        </p>
+        <a href="{% url 'upload_resume' %}" class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">Start Analyzing Now</a>
+    </section>
+
+    <!-- 🚀 Pricing Section -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto text-center px-6">
+            <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-12">Affordable Pricing Plans</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Basic Plan -->
+                <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 transition-transform transform hover:scale-105">
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Basic Plan</h3>
+                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Analyze up to 5 resumes per month</p>
+                    <p class="mt-4 text-xl font-bold text-indigo-600">$9.99/month</p>
+                    <a href="#" class="mt-6 inline-block bg-indigo-600 text-white py-2 px-6 rounded-full hover:bg-indigo-700 transition duration-300">Choose Plan</a>
+                </div>
+                <!-- Pro Plan -->
+                <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 transition-transform transform hover:scale-105">
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Pro Plan</h3>
+                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Analyze up to 50 resumes per month</p>
+                    <p class="mt-4 text-xl font-bold text-indigo-600">$29.99/month</p>
+                    <a href="#" class="mt-6 inline-block bg-indigo-600 text-white py-2 px-6 rounded-full hover:bg-indigo-700 transition duration-300">Choose Plan</a>
+                </div>
+                <!-- Enterprise Plan -->
+                <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 transition-transform transform hover:scale-105">
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Enterprise Plan</h3>
+                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Unlimited resume analysis for teams</p>
+                    <p class="mt-4 text-xl font-bold text-indigo-600">$99.99/month</p>
+                    <a href="#" class="mt-6 inline-block bg-indigo-600 text-white py-2 px-6 rounded-full hover:bg-indigo-700 transition duration-300">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dark Mode Toggle -->
+    {% comment %} <button id="darkModeToggle" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg">
+        🌙 Dark Mode
+    </button> {% endcomment %}
+
+    <script src="{% static 'js/resume_page.js' %}"></script>
+</body>
+</html>
+<footer class="bg-gray-900 text-white py-6">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2025 AI Resume Analyzer. All rights reserved.</p>
+    </div>
+</footer>

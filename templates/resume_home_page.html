@@ -1,0 +1,195 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/resume_page.css' %}">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 transition-all">
+
+    <!-- 🌟 Header Section -->
+    <header class="bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-8 py-4" style="margin-top: 15px;">
+            <h1 class="text-2xl font-extrabold">AI Resume Analyzer</h1>
+            <nav class="flex items-center ml-auto" >
+                <ul class="flex space-x-6 text-lg font-medium">
+                    <li><a href="{% url 'home' %}" class="text-gray-300 hover:text-gray-400 transition">Home</a></li>
+                    <li><a href="{% url 'upload_resume' %}" class="hover:text-gray-300 transition">Resume Analyzer</a></li>
+                    <li><a href="{% url 'live_internship' %}" class="hover:text-gray-300 transition">Live Internship</a></li>
+                    <li><a href="#" class="hover:text-gray-300 transition">Dashboard</a></li>
+                    <li><a href="{% url 'pricing' %}" class="hover:text-gray-300 transition">Pricing</a></li>
+                </ul>
+            </nav>
+            <div class="relative ml-4"> <!-- Add small left margin if needed -->
+                <button id="user-logo" class="focus:outline-none">
+                    <img src="{% static 'images/user-icon.png' %}" alt="User" class="w-10 h-10 rounded-full">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="hidden fixed top-0 right-0 h-full w-64 bg-gray-800 text-white p-6 shadow-lg">
+        <button id="close-sidebar" class="text-white text-xl absolute top-4 right-4">&times;</button>
+        <div class="flex items-center space-x-3">
+            <img src="{% static 'images/user-icon.png' %}" alt="User" class="w-16 h-16 rounded-full">
+            <span class="text-lg font-semibold">
+                {{ request.session.username|default:"User Name" }}
+            </span>
+        </div>
+
+        <ul class="mt-6 space-y-4">
+            <li><a href="#" class="block">Profile</a></li>
+            <li><a href="#" class="block">Settings</a></li>
+            <li><a href="#" class="block">Logout</a></li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById("user-logo").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.remove("hidden");
+        });
+        document.getElementById("close-sidebar").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.add("hidden");
+        });
+    </script>
+
+    <!-- 🚀 Hero Section -->
+    <section class="flex flex-col items-center justify-center text-center min-h-[54vh] px-6">
+        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white animate-fade-in">
+            <span id="typing-text"></span>
+        </h1>
+        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300 max-w-xl">
+            Our AI-powered resume analyzer helps you optimize your resume for the job market.
+            Get personalized feedback and improve your chances of getting hired!
+        </p>
+        <a href="#" class="mt-6 px-6 py-3 bg-purple-600 text-white rounded-lg text-lg font-medium hover:bg-purple-700 transition">
+            Try It Now
+        </a>
+    </section>
+
+    <script>
+        const textOptions = [
+            "Unlock Your Career Potential with AI.",
+            "Discover Your Dream Internship with AI-Driven Insights.",
+            "Transform Your Internship Search with the Power of AI.",
+            "Step into a Brighter Future with AI-Optimized Internship Matching!",
+            "Empower Your Career Path with Cutting-Edge AI Solutions.",
+            "AI-Powered Internship Search: Bridging Talent with Opportunity.",
+            "Find the Perfect Internship Faster with AI-Enhanced Search.",
+            "Unlock Endless Internship Opportunities with the Power of AI.",
+            "AI-Powered Internship Discovery: Shaping Your Future, Today.",
+            "Navigating Your Internship Journey with AI Precision.",
+            "Your Career, Accelerated by AI.",
+            "Where Technology Meets Talent: AI Internship Search!"
+        ];
+
+        let currentIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const targetElement = document.getElementById("typing-text");
+            let currentText = textOptions[currentIndex];
+
+            if (isDeleting) {
+                targetElement.textContent = currentText.substring(0, charIndex--);
+            } else {
+                targetElement.textContent = currentText.substring(0, charIndex++);
+            }
+
+            if (!isDeleting && charIndex === currentText.length) {
+                setTimeout(() => isDeleting = true, 1500);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                currentIndex = (currentIndex + 1) % textOptions.length;
+            }
+
+            setTimeout(type, isDeleting ? 60 : 100);
+        }
+        
+        type();
+    </script>
+
+    <!-- 🛠️ Features Section -->
+    <section class="bg-white dark:bg-gray-800 py-16">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Why Choose Our AI Analyzer?</h2>
+            <div class="mt-8 flex flex-wrap justify-center gap-8">
+                <div class="w-64 bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-600">📊 Instant Analysis</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">Get AI-powered insights on your resume in seconds.</p>
+                </div>
+                <div class="w-64 bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-600">🔍 Keyword Optimization</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">Ensure your resume is ATS-friendly and ranks higher.</p>
+                </div>
+                <div class="w-64 bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-600">💡 Smart Suggestions</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">Improve your resume with expert AI recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- 💬 Testimonials -->
+     <section class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">What Users Say</h2>
+            <div class="mt-8 flex flex-wrap justify-center gap-8 overflow-hidden">
+                <div class="w-80 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-slide">
+                    <p class="text-gray-600 dark:text-gray-300">"This AI tool helped me land my dream job!"</p>
+                    <h4 class="mt-2 font-semibold text-gray-900 dark:text-white">- Javeriya.</h4>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    
+    <style>
+        @keyframes slide-left-to-right {
+            0% {
+                transform: translateX(-288%);
+            }
+            50% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(358%);
+            }
+        }
+    
+        .animate-slide {
+            animation: slide-left-to-right 20s linear infinite;
+        }
+    
+        .overflow-hidden {
+            width: 100%;
+            overflow: hidden;
+        }
+    </style>
+    
+
+    <!-- 📩 Call-To-Action -->
+    <section class="py-12 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-center">
+        <h2 class="text-3xl font-bold">Ready to Improve Your Resume?</h2>
+        <p class="mt-2 text-lg">Start analyzing your resume today with our AI-powered tool.</p>
+        <a href="{% url 'upload_resume' %}" class="mt-4 inline-block px-6 py-3 bg-white text-purple-600 rounded-lg text-lg font-medium hover:bg-gray-200 transition">
+            Upload Resume
+        </a>
+    </section>
+
+    <!-- 🔗 Footer -->
+    <footer class="bg-gray-900 text-white py-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 AI Resume Analyzer. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
